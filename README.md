@@ -13,6 +13,8 @@ LLMs into trouble:
   attacker server when a chat UI renders them (the "tracking-pixel" attack)
 - 👻 **Obfuscation** — zero-width characters, homoglyphs, unicode-tag smuggling, and
   base64/hex payloads that decode to hidden instructions
+- 🌐 **Multilingual** — the same injection/jailbreak/exfiltration moves in
+  **Bahasa Indonesia**, not just English (`abaikan semua instruksi sebelumnya`)
 
 It is **zero-dependency**, runs fully **offline** (no API calls, no model
 downloads), and ships a **library**, a **CLI**, and an **MCP server** so you can
@@ -198,7 +200,7 @@ Detectors are pluggable — subclass `Detector`, implement
 
 ```bash
 pip install -e ".[dev]"
-pytest -q          # 118 tests, all offline
+pytest -q          # 143 tests, all offline
 ```
 
 **CI:** a ready-to-use GitHub Actions workflow is at

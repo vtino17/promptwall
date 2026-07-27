@@ -22,7 +22,7 @@ from .policy import Policy, DEFAULT_POLICY, STRICT_POLICY, AUDIT_POLICY
 from .firewall import Firewall, Blocked
 from .detectors import Detector, DataExfiltrationDetector, default_detectors
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 
 __all__ = [
     "Firewall",
