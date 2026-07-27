@@ -18,6 +18,9 @@ It is **zero-dependency**, runs fully **offline** (no API calls, no model
 downloads), and ships a **library**, a **CLI**, and an **MCP server** so you can
 drop it in front of any agent — including Claude.
 
+**▶ Try the live demo:** [vtino17.github.io/promptwall](https://vtino17.github.io/promptwall/)
+— paste a prompt and watch the detection rules run in your browser.
+
 > Why it exists: OWASP now ranks *Prompt Injection* as the **#1 risk** for LLM
 > applications, but most teams have nothing between the user and the model.
 > PromptWall is a small, explainable, deterministic first line of defence you
