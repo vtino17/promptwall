@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "promptwall"
+version = "0.1.0"
+description = "A firewall for LLM traffic: detect prompt injection, jailbreaks, and secret/PII leaks."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "vtino17" }]
+keywords = [
+    "llm", "security", "prompt-injection", "jailbreak", "guardrails",
+    "ai-safety", "firewall", "mcp", "dlp",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Security",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = []
+
+[project.optional-dependencies]
+mcp = ["mcp>=1.0"]
+dev = ["pytest>=7"]
+
+[project.urls]
+Homepage = "https://github.com/vtino17/promptwall"
+Issues = "https://github.com/vtino17/promptwall/issues"
+
+[project.scripts]
+promptwall = "promptwall.cli:main"
+promptwall-mcp = "promptwall.mcp_server:main"
+
+[tool.setuptools.packages.find]
+include = ["promptwall*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
