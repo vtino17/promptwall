@@ -25,6 +25,11 @@ _PATTERNS = [
     ("JSON Web Token", re.compile(r"\beyJ[A-Za-z0-9_-]{6,}\.eyJ[A-Za-z0-9_-]{6,}\.[A-Za-z0-9_-]{6,}\b")),
     ("private key block", re.compile(
         r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP )?PRIVATE KEY-----")),
+    ("GitHub fine-grained token", re.compile(r"\bgithub_pat_[A-Za-z0-9_]{22,}\b")),
+    ("npm access token", re.compile(r"\bnpm_[A-Za-z0-9]{36}\b")),
+    ("SendGrid API key", re.compile(r"\bSG\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\b")),
+    ("Slack webhook URL", re.compile(
+        r"https://hooks\.slack\.com/services/T[A-Za-z0-9]+/B[A-Za-z0-9]+/[A-Za-z0-9]+")),
     ("generic credential assignment", re.compile(
         r"(?i)\b(?:api[_-]?key|secret|token|passwd|password|access[_-]?key)\b"
         r"\s*[:=]\s*['\"]?([A-Za-z0-9!@#$%^&*._-]{8,})['\"]?")),
