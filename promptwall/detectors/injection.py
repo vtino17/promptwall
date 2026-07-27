@@ -38,4 +38,19 @@ class InjectionDetector(KeywordDetector):
         (r"\bdo\s+not\s+(?:follow|obey|comply\s+with)\b.{0,30}"
          r"(?:instructions?|rules?|guidelines?|system)",
          "instruction to stop following the rules"),
+
+        # --- Indonesian ---  English-only filters are trivially bypassed by
+        # switching language; these cover the same override moves in Bahasa.
+        (r"\babaikan\s+(?:semua\s+)?(?:instruksi|perintah|petunjuk|arahan|aturan)"
+         r"(?:\s+(?:sebelumnya|di\s+atas|sebelum\s+ini|terdahulu))?",
+         "instruction to ignore prior instructions (id)"),
+        (r"\blupakan\s+(?:semua\s+)?(?:instruksi|perintah|petunjuk|aturan|percakapan)",
+         "instruction to forget prior context (id)"),
+        (r"\bjangan\s+(?:ikuti|patuhi|mengikuti|hiraukan|pedulikan)\s+"
+         r"(?:instruksi|aturan|panduan|perintah|sistem)",
+         "instruction to stop following the rules (id)"),
+        (r"\bmulai\s+(?:dari\s+)?sekarang\b.{0,40}\bkamu\b",
+         "attempt to redefine behaviour going forward (id)"),
+        (r"\binstruksi\s+baru\s*:",
+         "injected replacement instructions (id)"),
     )

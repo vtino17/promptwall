@@ -39,4 +39,17 @@ class JailbreakDetector(KeywordDetector):
         (r"\bhypothetical(?:ly)?\b.{0,40}\bno\s+(?:rules?|restrictions?|"
          r"consequences?|filter)",
          "'hypothetical with no rules' framing"),
+
+        # --- Indonesian ---
+        (r"\bkamu\s+sekarang\s+(?:adalah\s+)?(?:tanpa\s+batasan|tidak\s+dibatasi|"
+         r"bebas\s+tanpa\s+aturan|tidak\s+difilter|tanpa\s+filter)",
+         "request to become an unrestricted persona (id)"),
+        (r"\babaikan\s+(?:aturan|panduan|pedoman|kebijakan)\s+keamanan",
+         "request to bypass the safety policy (id)"),
+        (r"\btidak\s+ada\s+(?:aturan|batasan|larangan|filter)\b",
+         "assertion that no rules apply (id)"),
+        (r"\bmode\s+pengembang\b",
+         "'developer mode' jailbreak (id)"),
+        (r"\b(?:kamu\s+tidak\s+(?:boleh|bisa)\s+menolak|jangan\s+pernah\s+menolak)\b",
+         "attempt to forbid refusals (id)"),
     )

@@ -35,4 +35,15 @@ class ExfiltrationDetector(KeywordDetector):
         (r"\bbegin\s+your\s+(?:reply|response|answer)\s+with\b.{0,40}"
          r"(?:you\s+are|system|instructions?)",
          "prefix-injection to leak boilerplate instructions"),
+
+        # --- Indonesian ---
+        (r"\bulangi\s+(?:instruksi|system\s+prompt|prompt\s+sistem|"
+         r"kata-kata\s+di\s+atas|teks\s+di\s+atas)",
+         "'repeat the words above' exfiltration (id)"),
+        (r"\bapa\s+(?:instruksi|prompt|aturan)\s+(?:awal|sistem|asli|sebenarnya)"
+         r"\s+kamu\b",
+         "question probing for the system prompt (id)"),
+        (r"\b(?:tampilkan|tunjukkan|beritahu(?:kan)?)\s+(?:instruksi|prompt|aturan)"
+         r"\s+(?:sistem\s+)?kamu\b",
+         "request to reveal the system prompt (id)"),
     )
