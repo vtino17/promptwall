@@ -44,6 +44,9 @@ def build_parser() -> argparse.ArgumentParser:
                       default="input", help="Whether the text is model input or output")
     scan.add_argument("-p", "--policy", choices=list(_POLICIES),
                       default="default", help="Policy to apply")
+    scan.add_argument("-c", "--config", metavar="FILE",
+                      help="JSON config with custom rules, policy, and allowlist "
+                           "(overrides --policy)")
     scan.add_argument("--json", action="store_true", help="Emit a JSON report")
     scan.add_argument("-q", "--quiet", action="store_true",
                       help="Print nothing; communicate only via exit code")
@@ -84,7 +87,13 @@ def main(argv: Optional[List[str]] = None) -> int:
     if not text:
         parser.error("no text provided (pass an argument or pipe via stdin)")
 
-    firewall = Firewall(policy=_POLICIES[args.policy])
+    if args.config:
+        try:
+            firewall = Firewall.from_config(args.config)
+        except (OSError, ValueError, KeyError) as exc:
+            parser.error(f"could not load config {args.config!r}: {exc}")
+    else:
+        firewall = Firewall(policy=_POLICIES[args.policy])
     result = firewall.scan(text, Direction(args.direction))
 
     if not args.quiet:

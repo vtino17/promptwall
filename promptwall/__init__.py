@@ -20,7 +20,7 @@ from __future__ import annotations
 from .types import Action, Direction, Finding, ScanResult, Severity
 from .policy import Policy, DEFAULT_POLICY, STRICT_POLICY, AUDIT_POLICY
 from .firewall import Firewall, Blocked
-from .detectors import Detector, default_detectors
+from .detectors import Detector, DataExfiltrationDetector, default_detectors
 
 __version__ = "0.1.0"
 
@@ -32,6 +32,7 @@ __all__ = [
     "STRICT_POLICY",
     "AUDIT_POLICY",
     "Detector",
+    "DataExfiltrationDetector",
     "default_detectors",
     "Action",
     "Direction",

@@ -28,6 +28,20 @@ class Firewall:
         self.detectors = detectors if detectors is not None else default_detectors()
         self.policy = policy or DEFAULT_POLICY
 
+    @classmethod
+    def from_config(cls, config) -> "Firewall":
+        """Build a Firewall from a config dict or a path to a JSON config file.
+
+        See :mod:`promptwall.config` for the schema. Custom rules extend the
+        built-in detectors; the policy and any domain allowlist are applied.
+        """
+        from .config import load_config, load_config_file
+        if isinstance(config, dict):
+            detectors, policy = load_config(config)
+        else:
+            detectors, policy = load_config_file(config)
+        return cls(detectors=detectors, policy=policy)
+
     def scan(self, text: str, direction: Direction = Direction.INPUT) -> ScanResult:
         ctx = ScanContext.build(text, direction)
         findings: List[Finding] = []
