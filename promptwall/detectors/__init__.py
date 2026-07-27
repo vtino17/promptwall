@@ -10,6 +10,7 @@ from .exfiltration import ExfiltrationDetector
 from .secrets import SecretDetector
 from .pii import PIIDetector
 from .obfuscation import ObfuscationDetector
+from .exfil_channel import DataExfiltrationDetector
 
 __all__ = [
     "Detector",
@@ -20,6 +21,7 @@ __all__ = [
     "SecretDetector",
     "PIIDetector",
     "ObfuscationDetector",
+    "DataExfiltrationDetector",
     "default_detectors",
 ]
 
@@ -33,4 +35,5 @@ def default_detectors() -> List[Detector]:
         SecretDetector(),
         PIIDetector(),
         ObfuscationDetector(),
+        DataExfiltrationDetector(),
     ]
