@@ -244,8 +244,8 @@
     <a href="#inspect">Live demo</a>
     <a href="#threats">Coverage</a>
     <a href="#use">Use it</a>
-    <a class="gh" href="https://github.com/vtino17/promptwall">GitHub ↗</a>
-    <button class="themetoggle" id="themeBtn" type="button">◐ theme</button>
+    <a class="gh" href="https://github.com/vtino17/promptwall">GitHub</a>
+    <button class="themetoggle" id="themeBtn" type="button">Theme</button>
   </nav>
 </header>
 
@@ -254,10 +254,10 @@
     <p class="eyebrow"><span class="dot"></span> Runtime security for LLM apps</p>
     <h1>A <span class="hl">firewall</span> for the text going in and out of your model.</h1>
     <p class="lede">PromptWall inspects every prompt and response for injection, jailbreaks,
-      system-prompt theft, leaked secrets &amp; PII, and data-exfiltration channels — then
+      system-prompt theft, leaked secrets and PII, and data-exfiltration channels, then
       blocks, flags, or redacts. Zero dependencies, fully offline, deterministic enough to read.</p>
     <div class="cta-row">
-      <a class="btn primary" href="#inspect">▶ Try the live inspector</a>
+      <a class="btn primary" href="#inspect">Try the live inspector</a>
       <a class="btn ghost" href="https://github.com/vtino17/promptwall">View source</a>
     </div>
     <div class="stats">
@@ -275,7 +275,7 @@
       <p class="k">Live inspector</p>
       <h2>Paste a prompt. Watch the wall inspect it.</h2>
       <p>The same detection rules as the Python library, ported to run right here in your
-        browser — nothing is sent anywhere. Load an example or type your own.</p>
+        browser. Nothing is sent anywhere. Load an example or type your own.</p>
     </div>
     <div class="inspector">
       <div class="pane input">
@@ -289,9 +289,9 @@
       </div>
     </div>
     <p class="disclaimer">This browser demo mirrors PromptWall's rule set for illustration.
-      The library is the source of truth: deterministic, span-accurate, and covered by 118 tests.
-      Pattern detection is one layer of defence-in-depth — not a replacement for the model's own
-      safety or for proper tool/privilege isolation.</p>
+      The library is the source of truth: deterministic, span-accurate, and covered by 143 tests.
+      Pattern detection is one layer of defence-in-depth, not a replacement for the model's own
+      safety or for proper tool and privilege isolation.</p>
   </div>
 </section>
 
@@ -301,11 +301,11 @@
       <p class="k">Coverage</p>
       <h2>Seven detectors, one verdict.</h2>
       <p>Each detector reports findings with a severity; a small, readable policy turns them
-        into a single action — allow, flag, redact, or block.</p>
+        into a single action: allow, flag, redact, or block.</p>
     </div>
     <div class="grid">
       <div class="card"><h3><span class="ic"></span>Prompt injection</h3>
-        <p>Instruction overrides — <code>ignore all previous instructions</code>, forged
+        <p>Instruction overrides: <code>ignore all previous instructions</code>, forged
           <code>system:</code> markers, "from now on you will…".</p></div>
       <div class="card"><h3><span class="ic"></span>Jailbreaks</h3>
         <p>DAN, "developer mode", "you are now unrestricted", roleplay framed to drop the rules.</p></div>
@@ -388,7 +388,7 @@ $ promptwall-mcp
 <footer>
   <div class="wrap">
     <div>PromptWall — deterministic, offline LLM traffic inspection.</div>
-    <div class="mono">MIT © 2026 vtino17 · <a href="https://github.com/vtino17/promptwall">source ↗</a></div>
+    <div class="mono">MIT licensed, 2026 vtino17 · <a href="https://github.com/vtino17/promptwall">source</a></div>
   </div>
 </footer>
 
@@ -575,7 +575,7 @@ $ promptwall-mcp
     var html='<div class="badge v-'+r.action+' scanline"><span class="big">'+r.action.toUpperCase()+
       '</span><span class="meta">severity: '+r.severity+'<br>'+r.findings.length+' finding'+(r.findings.length===1?"":"s")+'</span></div>';
     if(!r.findings.length){
-      html+='<div class="clean">✓ No threats detected. Text would pass to the model unchanged.</div>';
+      html+='<div class="clean">No threats detected. Text would pass to the model unchanged.</div>';
     } else {
       html+='<ul class="findings">';
       r.findings.forEach(function(f){
