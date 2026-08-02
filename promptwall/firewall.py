@@ -1,4 +1,5 @@
 """The Firewall: run every detector, apply the policy, produce a verdict."""
+
 from __future__ import annotations
 
 from typing import Callable, List, Optional
@@ -8,6 +9,13 @@ from .normalize import ScanContext
 from .policy import DEFAULT_POLICY, Policy
 from .redaction import redact
 from .types import Action, Direction, Finding, ScanResult
+
+DEFAULT_MAX_TEXT_CHARS = 1_000_000
+MAX_CONFIGURED_TEXT_CHARS = 10_000_000
+
+
+class TextTooLarge(ValueError):
+    """Raised when text exceeds the configured resource-safety boundary."""
 
 
 class Firewall:
@@ -24,25 +32,40 @@ class Firewall:
         self,
         detectors: Optional[List[Detector]] = None,
         policy: Optional[Policy] = None,
+        max_text_chars: int = DEFAULT_MAX_TEXT_CHARS,
     ):
+        if isinstance(max_text_chars, bool) or not isinstance(max_text_chars, int):
+            raise TypeError("max_text_chars must be an integer")
+        if not 1 <= max_text_chars <= MAX_CONFIGURED_TEXT_CHARS:
+            raise ValueError(
+                f"max_text_chars must be between 1 and {MAX_CONFIGURED_TEXT_CHARS}"
+            )
         self.detectors = detectors if detectors is not None else default_detectors()
         self.policy = policy or DEFAULT_POLICY
+        self.max_text_chars = max_text_chars
 
     @classmethod
-    def from_config(cls, config) -> "Firewall":
+    def from_config(cls, config) -> Firewall:
         """Build a Firewall from a config dict or a path to a JSON config file.
 
         See :mod:`promptwall.config` for the schema. Custom rules extend the
         built-in detectors; the policy and any domain allowlist are applied.
         """
-        from .config import load_config, load_config_file
+        from .config import load_config_file_with_limits, load_config_with_limits
+
         if isinstance(config, dict):
-            detectors, policy = load_config(config)
+            detectors, policy, limits = load_config_with_limits(config)
         else:
-            detectors, policy = load_config_file(config)
-        return cls(detectors=detectors, policy=policy)
+            detectors, policy, limits = load_config_file_with_limits(config)
+        return cls(detectors=detectors, policy=policy, **limits)
 
     def scan(self, text: str, direction: Direction = Direction.INPUT) -> ScanResult:
+        if not isinstance(text, str):
+            raise TypeError("text must be a string")
+        if len(text) > self.max_text_chars:
+            raise TextTooLarge(
+                f"text length {len(text)} exceeds max_text_chars={self.max_text_chars}"
+            )
         ctx = ScanContext.build(text, direction)
         findings: List[Finding] = []
         for detector in self.detectors:

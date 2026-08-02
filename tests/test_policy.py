@@ -3,8 +3,9 @@ from promptwall.types import Action, Finding, Severity
 
 
 def finding(sev, redactable=False):
-    return Finding(detector="t", category="c", severity=sev,
-                   message="m", redactable=redactable)
+    return Finding(
+        detector="t", category="c", severity=sev, message="m", redactable=redactable
+    )
 
 
 class TestDefaultPolicy:
@@ -20,19 +21,26 @@ class TestDefaultPolicy:
         assert self.p.decide([finding(Severity.CRITICAL)]) is Action.BLOCK
 
     def test_redactable_secret_is_redacted_not_blocked(self):
-        assert self.p.decide([finding(Severity.CRITICAL, redactable=True)]) is Action.REDACT
+        assert (
+            self.p.decide([finding(Severity.CRITICAL, redactable=True)])
+            is Action.REDACT
+        )
 
     def test_medium_pii_is_redacted(self):
-        assert self.p.decide([finding(Severity.MEDIUM, redactable=True)]) is Action.REDACT
+        assert (
+            self.p.decide([finding(Severity.MEDIUM, redactable=True)]) is Action.REDACT
+        )
 
     def test_low_only_is_flagged(self):
         assert self.p.decide([finding(Severity.LOW)]) is Action.FLAG
 
     def test_block_wins_over_redact(self):
-        decided = self.p.decide([
-            finding(Severity.HIGH),                       # injection -> block
-            finding(Severity.CRITICAL, redactable=True),  # secret -> redact
-        ])
+        decided = self.p.decide(
+            [
+                finding(Severity.HIGH),  # injection -> block
+                finding(Severity.CRITICAL, redactable=True),  # secret -> redact
+            ]
+        )
         assert decided is Action.BLOCK
 
 
@@ -40,7 +48,9 @@ class TestStrictPolicy:
     p = STRICT_POLICY
 
     def test_redaction_disabled_blocks_secrets(self):
-        assert self.p.decide([finding(Severity.CRITICAL, redactable=True)]) is Action.BLOCK
+        assert (
+            self.p.decide([finding(Severity.CRITICAL, redactable=True)]) is Action.BLOCK
+        )
 
     def test_medium_blocks(self):
         assert self.p.decide([finding(Severity.MEDIUM)]) is Action.BLOCK

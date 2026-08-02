@@ -1,4 +1,5 @@
 """Additional provider credential patterns."""
+
 import pytest
 
 from promptwall.detectors import SecretDetector
@@ -10,13 +11,18 @@ def scan(text):
     return SecretDetector().scan(ScanContext.build(text))
 
 
-@pytest.mark.parametrize("text,label", [
-    ("token github_pat_" + "A" * 22 + "_" + "b" * 20, "GitHub fine-grained"),
-    ("npm_" + "a" * 36, "npm"),
-    ("key SG." + "a" * 20 + "." + "b" * 25, "SendGrid"),
-    ("https://hooks.slack.com/services/T00000000/B11111111/aBcDeFgHiJkLmNoPqR",
-     "Slack webhook"),
-])
+@pytest.mark.parametrize(
+    "text,label",
+    [
+        ("token github_pat_" + "A" * 22 + "_" + "b" * 20, "GitHub fine-grained"),
+        ("npm_" + "a" * 36, "npm"),
+        ("key SG." + "a" * 20 + "." + "b" * 25, "SendGrid"),
+        (
+            "https://hooks.slack.com/services/T00000000/B11111111/aBcDeFgHiJkLmNoPqR",
+            "Slack webhook",
+        ),
+    ],
+)
 def test_new_provider_secrets_are_detected(text, label):
     f = scan(text)
     assert f, f"expected a finding for {label}"

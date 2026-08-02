@@ -3,10 +3,11 @@
 Everything here is a plain dataclass / enum with no third-party dependencies so
 the whole detection pipeline stays importable in the smallest environment.
 """
+
 from __future__ import annotations
 
 import enum
-from dataclasses import dataclass, field, asdict
+from dataclasses import asdict, dataclass, field
 from typing import List, Optional, Tuple
 
 

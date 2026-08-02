@@ -3,6 +3,21 @@
 All notable changes to PromptWall are documented here. This project adheres to
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Bounded scan and encoded-payload resource limits with fail-closed errors.
+- Strict validation and size limits for JSON configuration and custom rules.
+- Required lint, multi-version test, package, CodeQL, Scorecard, dependency
+  update, and provenance-aware GitHub release workflows.
+- Security policy and contributor verification guidance.
+
+### Changed
+
+- CI-supported Python versions now include 3.9, 3.12, and 3.14.
+- Project metadata uses the current SPDX license format.
+
 ## [0.2.0] — 2026-07-28
 
 ### Added

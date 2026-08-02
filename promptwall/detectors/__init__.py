@@ -1,16 +1,17 @@
 """Built-in detectors and the default detector set."""
+
 from __future__ import annotations
 
 from typing import List
 
 from .base import Detector, KeywordDetector
+from .exfil_channel import DataExfiltrationDetector
+from .exfiltration import ExfiltrationDetector
 from .injection import InjectionDetector
 from .jailbreak import JailbreakDetector
-from .exfiltration import ExfiltrationDetector
-from .secrets import SecretDetector
-from .pii import PIIDetector
 from .obfuscation import ObfuscationDetector
-from .exfil_channel import DataExfiltrationDetector
+from .pii import PIIDetector
+from .secrets import SecretDetector
 
 __all__ = [
     "Detector",

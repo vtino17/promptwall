@@ -4,11 +4,13 @@ A detector is any object with a ``name`` and a ``scan(ctx) -> list[Finding]``
 method. Keeping the interface this small makes third-party detectors trivial to
 add: subclass, implement ``scan``, done.
 """
+
 from __future__ import annotations
 
 import re
 from abc import ABC, abstractmethod
-from typing import Iterable, List
+from collections.abc import Iterable
+from typing import List
 
 from ..normalize import ScanContext
 from ..types import Finding, Severity
@@ -38,7 +40,9 @@ class KeywordDetector(Detector):
     patterns: Iterable = ()
 
     def __init__(self):
-        self._compiled = [(re.compile(p, re.IGNORECASE), msg) for p, msg in self.patterns]
+        self._compiled = [
+            (re.compile(p, re.IGNORECASE), msg) for p, msg in self.patterns
+        ]
 
     def _bump(self, severity: Severity) -> Severity:
         one_up = min(int(severity) + 1, int(Severity.CRITICAL))
