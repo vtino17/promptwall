@@ -30,8 +30,9 @@ class TestScanCommand:
         assert capsys.readouterr().out == ""
 
     def test_strict_policy_blocks_secret(self, capsys):
-        code = main(["scan", "-p", "strict", "-d", "output",
-                     "sk-abcdefghij0123456789ABCD"])
+        code = main(
+            ["scan", "-p", "strict", "-d", "output", "sk-abcdefghij0123456789ABCD"]
+        )
         assert code == 1
 
     def test_no_text_errors(self, capsys):
@@ -42,6 +43,12 @@ class TestScanCommand:
     def test_no_command_prints_help(self, capsys):
         assert main([]) == 0
         assert "usage" in capsys.readouterr().out.lower()
+
+    def test_oversized_input_fails_closed_without_traceback(self, capsys):
+        assert main(["scan", "x" * 1_000_001]) == 1
+        captured = capsys.readouterr()
+        assert captured.out == ""
+        assert "blocked" in captured.err
 
 
 class TestVersion:

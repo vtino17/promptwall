@@ -9,15 +9,17 @@ When a chat UI renders that image the browser silently fetches the URL and the
 data leaves. This detector flags URLs in model output that look like an
 exfiltration channel, and can enforce a domain allowlist.
 """
+
 from __future__ import annotations
 
 import re
-from typing import List, Optional, Sequence
+from collections.abc import Sequence
+from typing import List, Optional
 from urllib.parse import urlparse
 
-from .base import Detector
 from ..normalize import ScanContext
 from ..types import Finding, Severity
+from .base import Detector
 
 # Markdown image: ![alt](url).  Markdown link: [text](url) (not preceded by !).
 _MD_IMAGE = re.compile(r"!\[[^\]]*\]\(\s*<?(https?://[^)\s>]+)>?\s*\)")
@@ -33,8 +35,11 @@ class DataExfiltrationDetector(Detector):
     def __init__(self, allowed_domains: Optional[Sequence[str]] = None):
         # When set, any URL whose host is not on the list is flagged, regardless
         # of how the data is carried. Hosts match themselves and any subdomain.
-        self.allowed_domains = [d.lower().lstrip(".") for d in allowed_domains] \
-            if allowed_domains else None
+        self.allowed_domains = (
+            [d.lower().lstrip(".") for d in allowed_domains]
+            if allowed_domains
+            else None
+        )
 
     def _host_allowed(self, url: str) -> bool:
         if self.allowed_domains is None:
@@ -56,32 +61,52 @@ class DataExfiltrationDetector(Detector):
             if any(span[0] < e and s < span[1] for s, e in claimed):
                 return
             claimed.append(span)
-            findings.append(Finding(
-                detector=self.name, category="data_exfiltration",
-                severity=severity, message=message,
-                evidence=evidence[:120], span=span,
-            ))
+            findings.append(
+                Finding(
+                    detector=self.name,
+                    category="data_exfiltration",
+                    severity=severity,
+                    message=message,
+                    evidence=evidence[:120],
+                    span=span,
+                )
+            )
 
         # Auto-loaded images are the most dangerous: no click required.
         for m in _MD_IMAGE.finditer(text):
             url = m.group(1)
             if not self._host_allowed(url):
-                add(Severity.HIGH, "markdown image to a non-allowlisted host",
-                    m.span(1), url)
+                add(
+                    Severity.HIGH,
+                    "markdown image to a non-allowlisted host",
+                    m.span(1),
+                    url,
+                )
             elif self._query_payload_len(url) >= 12:
-                add(Severity.HIGH,
+                add(
+                    Severity.HIGH,
                     "markdown image URL carries data in its query/fragment",
-                    m.span(1), url)
+                    m.span(1),
+                    url,
+                )
 
         # Links need a click, but a data-carrying one is still suspicious.
         for m in _MD_LINK.finditer(text):
             url = m.group(1)
             if not self._host_allowed(url):
-                add(Severity.MEDIUM, "markdown link to a non-allowlisted host",
-                    m.span(1), url)
+                add(
+                    Severity.MEDIUM,
+                    "markdown link to a non-allowlisted host",
+                    m.span(1),
+                    url,
+                )
             elif self._query_payload_len(url) >= 24:
-                add(Severity.MEDIUM,
-                    "markdown link URL carries a large data payload", m.span(1), url)
+                add(
+                    Severity.MEDIUM,
+                    "markdown link URL carries a large data payload",
+                    m.span(1),
+                    url,
+                )
 
         # Bare URLs hiding an encoded blob (base64/hex) in path or query.
         for m in _BARE_URL.finditer(text):

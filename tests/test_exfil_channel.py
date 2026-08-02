@@ -28,18 +28,17 @@ class TestImageExfiltration:
 
 class TestAllowlist:
     def test_non_allowlisted_image_host_is_flagged(self):
-        f = scan("![x](https://sneaky.tld/p.png)",
-                 allowed_domains=["example.com"])
+        f = scan("![x](https://sneaky.tld/p.png)", allowed_domains=["example.com"])
         assert f and f[0].severity == Severity.HIGH
 
     def test_allowlisted_host_is_permitted(self):
-        f = scan("![x](https://cdn.example.com/p.png)",
-                 allowed_domains=["example.com"])
+        f = scan("![x](https://cdn.example.com/p.png)", allowed_domains=["example.com"])
         assert f == []
 
     def test_non_allowlisted_bare_url_is_flagged(self):
-        f = scan("visit https://tracker.tld/beacon now",
-                 allowed_domains=["example.com"])
+        f = scan(
+            "visit https://tracker.tld/beacon now", allowed_domains=["example.com"]
+        )
         assert any(x.message.startswith("URL to a non-allowlisted") for x in f)
 
 

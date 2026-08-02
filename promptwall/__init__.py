@@ -15,18 +15,20 @@ Quick start::
     # or keep an instance for custom policies:
     fw = promptwall.Firewall(policy=promptwall.STRICT_POLICY)
 """
+
 from __future__ import annotations
 
+from .detectors import DataExfiltrationDetector, Detector, default_detectors
+from .firewall import Blocked, Firewall, TextTooLarge
+from .policy import AUDIT_POLICY, DEFAULT_POLICY, STRICT_POLICY, Policy
 from .types import Action, Direction, Finding, ScanResult, Severity
-from .policy import Policy, DEFAULT_POLICY, STRICT_POLICY, AUDIT_POLICY
-from .firewall import Firewall, Blocked
-from .detectors import Detector, DataExfiltrationDetector, default_detectors
 
 __version__ = "0.2.0"
 
 __all__ = [
     "Firewall",
     "Blocked",
+    "TextTooLarge",
     "Policy",
     "DEFAULT_POLICY",
     "STRICT_POLICY",

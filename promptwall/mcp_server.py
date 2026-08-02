@@ -9,6 +9,7 @@ Tools exposed:
     * ``scan_prompt``   -- scan text about to be sent to a model
     * ``scan_response`` -- scan text a model produced
 """
+
 from __future__ import annotations
 
 import json

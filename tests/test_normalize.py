@@ -1,6 +1,7 @@
 import base64
 
 from promptwall.normalize import (
+    MAX_DECODED_PAYLOADS,
     ScanContext,
     decode_payloads,
     fold,
@@ -10,11 +11,11 @@ from promptwall.normalize import (
     strip_invisibles,
 )
 
-ZWSP = "​"          # zero-width space
-CYR_I = "і"         # Cyrillic small letter byelorussian-ukrainian i
-CYR_O = "о"         # Cyrillic small letter o
-CYR_A = "а"         # Cyrillic small letter a
-TAG_A = "\U000e0041"     # unicode tag "A"
+ZWSP = "​"  # zero-width space
+CYR_I = "і"  # Cyrillic small letter byelorussian-ukrainian i
+CYR_O = "о"  # Cyrillic small letter o
+CYR_A = "а"  # Cyrillic small letter a
+TAG_A = "\U000e0041"  # unicode tag "A"
 
 
 class TestFold:
@@ -67,6 +68,16 @@ class TestDecodePayloads:
 
     def test_ignores_short_tokens(self):
         assert decode_payloads("aGVsbG8=") == []  # "hello" -- too short to bother
+
+    def test_caps_number_of_decoded_payloads(self):
+        blobs = [
+            base64.b64encode(f"hidden instruction number {index}".encode()).decode()
+            for index in range(MAX_DECODED_PAYLOADS + 4)
+        ]
+        assert len(decode_payloads(" ".join(blobs))) == MAX_DECODED_PAYLOADS
+
+    def test_skips_oversized_encoded_token(self):
+        assert decode_payloads("A" * 65_540) == []
 
 
 class TestScanContext:

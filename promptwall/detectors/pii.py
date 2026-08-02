@@ -3,20 +3,22 @@
 Payment-card matches are validated with the Luhn checksum so a random 16-digit
 order number is not mistaken for a credit card. Findings are redactable.
 """
+
 from __future__ import annotations
 
 import re
 from typing import List
 
-from .base import Detector
 from ..normalize import ScanContext
 from ..types import Finding, Severity
+from .base import Detector
 
 _EMAIL = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}\b")
 _CARD = re.compile(r"\b(?:\d[ -]?){13,19}\b")
 _SSN = re.compile(r"\b\d{3}-\d{2}-\d{4}\b")
 _PHONE = re.compile(
-    r"(?<![\w.])\+?\d{1,3}[\s.-]?\(?\d{2,4}\)?(?:[\s.-]?\d{2,4}){2,4}(?![\w.])")
+    r"(?<![\w.])\+?\d{1,3}[\s.-]?\(?\d{2,4}\)?(?:[\s.-]?\d{2,4}){2,4}(?![\w.])"
+)
 
 
 def _luhn_ok(digits: str) -> bool:
@@ -44,19 +46,29 @@ class PIIDetector(Detector):
             if any(span[0] < e and s < span[1] for s, e in claimed):
                 return
             claimed.append(span)
-            findings.append(Finding(
-                detector=self.name, category="pii", severity=severity,
-                message=f"{label} present in text", evidence=evidence,
-                span=span, redactable=True,
-            ))
+            findings.append(
+                Finding(
+                    detector=self.name,
+                    category="pii",
+                    severity=severity,
+                    message=f"{label} present in text",
+                    evidence=evidence,
+                    span=span,
+                    redactable=True,
+                )
+            )
 
         for m in _EMAIL.finditer(text):
             add("email address", m.span(), m.group(0))
         for m in _CARD.finditer(text):
             digits = re.sub(r"[ -]", "", m.group(0))
             if 13 <= len(digits) <= 19 and _luhn_ok(digits):
-                add("payment card number", m.span(),
-                    digits[:4] + "***" + digits[-2:], Severity.HIGH)
+                add(
+                    "payment card number",
+                    m.span(),
+                    digits[:4] + "***" + digits[-2:],
+                    Severity.HIGH,
+                )
         for m in _SSN.finditer(text):
             add("national ID (SSN pattern)", m.span(), "***-**-****", Severity.HIGH)
         for m in _PHONE.finditer(text):

@@ -4,14 +4,15 @@ Unlike the keyword detectors, this one runs on the raw text and reports exact
 ``span`` offsets, so the policy can *redact* the secret in place rather than
 dropping the whole message.
 """
+
 from __future__ import annotations
 
 import re
 from typing import List
 
-from .base import Detector
 from ..normalize import ScanContext
 from ..types import Finding, Severity
+from .base import Detector
 
 # (label, compiled pattern). Order matters only for readability; every pattern
 # is tried. Patterns are deliberately specific to keep false positives low.
@@ -22,17 +23,32 @@ _PATTERNS = [
     ("Google API key", re.compile(r"\bAIza[0-9A-Za-z_-]{35}\b")),
     ("Slack token", re.compile(r"\bxox[baprs]-[0-9A-Za-z-]{10,}\b")),
     ("Stripe secret key", re.compile(r"\b[sr]k_(?:live|test)_[0-9A-Za-z]{16,}\b")),
-    ("JSON Web Token", re.compile(r"\beyJ[A-Za-z0-9_-]{6,}\.eyJ[A-Za-z0-9_-]{6,}\.[A-Za-z0-9_-]{6,}\b")),
-    ("private key block", re.compile(
-        r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP )?PRIVATE KEY-----")),
+    (
+        "JSON Web Token",
+        re.compile(
+            r"\beyJ[A-Za-z0-9_-]{6,}\.eyJ[A-Za-z0-9_-]{6,}\.[A-Za-z0-9_-]{6,}\b"
+        ),
+    ),
+    (
+        "private key block",
+        re.compile(r"-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP )?PRIVATE KEY-----"),
+    ),
     ("GitHub fine-grained token", re.compile(r"\bgithub_pat_[A-Za-z0-9_]{22,}\b")),
     ("npm access token", re.compile(r"\bnpm_[A-Za-z0-9]{36}\b")),
     ("SendGrid API key", re.compile(r"\bSG\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}\b")),
-    ("Slack webhook URL", re.compile(
-        r"https://hooks\.slack\.com/services/T[A-Za-z0-9]+/B[A-Za-z0-9]+/[A-Za-z0-9]+")),
-    ("generic credential assignment", re.compile(
-        r"(?i)\b(?:api[_-]?key|secret|token|passwd|password|access[_-]?key)\b"
-        r"\s*[:=]\s*['\"]?([A-Za-z0-9!@#$%^&*._-]{8,})['\"]?")),
+    (
+        "Slack webhook URL",
+        re.compile(
+            r"https://hooks\.slack\.com/services/T[A-Za-z0-9]+/B[A-Za-z0-9]+/[A-Za-z0-9]+"
+        ),
+    ),
+    (
+        "generic credential assignment",
+        re.compile(
+            r"(?i)\b(?:api[_-]?key|secret|token|passwd|password|access[_-]?key)\b"
+            r"\s*[:=]\s*['\"]?([A-Za-z0-9!@#$%^&*._-]{8,})['\"]?"
+        ),
+    ),
 ]
 
 

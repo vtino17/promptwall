@@ -12,13 +12,16 @@ def scan(detector, text):
 class TestSecrets:
     det = SecretDetector()
 
-    @pytest.mark.parametrize("text,label", [
-        ("key: sk-abcdef0123456789ABCDEFghij", "OpenAI"),
-        ("AKIAIOSFODNN7EXAMPLE is the id", "AWS"),
-        ("token ghp_" + "a" * 36, "GitHub"),
-        ("AIza" + "b" * 35, "Google"),
-        ("-----BEGIN RSA PRIVATE KEY-----", "private key"),
-    ])
+    @pytest.mark.parametrize(
+        "text,label",
+        [
+            ("key: sk-abcdef0123456789ABCDEFghij", "OpenAI"),
+            ("AKIAIOSFODNN7EXAMPLE is the id", "AWS"),
+            ("token ghp_" + "a" * 36, "GitHub"),
+            ("AIza" + "b" * 35, "Google"),
+            ("-----BEGIN RSA PRIVATE KEY-----", "private key"),
+        ],
+    )
     def test_detects_credentials(self, text, label):
         f = scan(self.det, text)
         assert f, f"expected a finding for {label}"

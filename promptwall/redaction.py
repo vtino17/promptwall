@@ -1,4 +1,5 @@
 """Mask redactable findings (secrets, PII) in place, leaving the rest intact."""
+
 from __future__ import annotations
 
 from typing import List

@@ -3,6 +3,7 @@
 The policy is intentionally simple and explainable -- an operator can read the
 thresholds and predict exactly what will happen. There is no scoring black box.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -56,5 +57,6 @@ STRICT_POLICY = Policy(block_at=Severity.MEDIUM, flag_at=Severity.LOW, redact=Fa
 
 #: Observe-only: never block, only flag. ``block_at`` sits above CRITICAL so no
 #: finding can ever reach it. Good for a shadow/monitoring rollout.
-AUDIT_POLICY = Policy(block_at=int(Severity.CRITICAL) + 1,
-                      flag_at=Severity.LOW, redact=False)
+AUDIT_POLICY = Policy(
+    block_at=int(Severity.CRITICAL) + 1, flag_at=Severity.LOW, redact=False
+)
