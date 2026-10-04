@@ -21,7 +21,7 @@ model downloads), and ships as a library, a CLI, and an MCP server, so you can
 put it in front of an agent without much ceremony.
 
 Live demo: [vtino17.github.io/promptwall](https://vtino17.github.io/promptwall/)
-— paste a prompt and watch the same rules run in the browser.
+- paste a prompt and watch the same rules run in the browser.
 
 OWASP lists prompt injection as the top risk for LLM applications, yet most
 teams have nothing sitting between the user and the model. PromptWall is meant
